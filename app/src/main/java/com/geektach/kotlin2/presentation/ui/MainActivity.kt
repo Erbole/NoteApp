@@ -1,22 +1,33 @@
 package com.geektach.kotlin2.presentation.ui
 
 import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.geektach.kotlin2.core.UiState
 import com.geektach.kotlin2.databinding.ActivityMainBinding
 import com.geektach.kotlin2.domain.model.Note
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityMainBinding
-    private lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        initClickers()
+        logicClickers()
+    }
+
+    private fun initClickers() {
         var i = 0
         binding.btnSave.setOnClickListener {
             i++
@@ -24,11 +35,66 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btnDelete.setOnClickListener {
+            i--
             viewModel.deleteNote(Note(i.toString(), i.toString()))
         }
+    }
 
-        viewModel.liveData.observe(this) {
-            binding.etNote.text = it.toString()
+    private fun logicClickers() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.addNotesState.collect {
+                    when (it) {
+                        is UiState.Error -> {
+                            Toast.makeText(this@MainActivity, it.error, Toast.LENGTH_SHORT).show()
+                        }
+                        is UiState.Loading -> {
+                            Toast.makeText(this@MainActivity, "Loading", Toast.LENGTH_SHORT).show()
+                        }
+                        is UiState.Success -> {
+                            if (it.data) {
+                                viewModel.getAllNotes()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.deleteNoteState.collect {
+                    when (it) {
+                        is UiState.Error -> {
+                            Toast.makeText(this@MainActivity, it.error, Toast.LENGTH_SHORT).show()
+                        }
+                        is UiState.Loading -> {
+                            Toast.makeText(this@MainActivity, "Loading", Toast.LENGTH_SHORT).show()
+                        }
+                        is UiState.Success -> {
+                            viewModel.getAllNotes()
+                        }
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.notesState.collect {
+                    when (it) {
+                        is UiState.Error -> {
+                            Toast.makeText(this@MainActivity, it.error, Toast.LENGTH_SHORT).show()
+                        }
+                        is UiState.Loading -> {
+                            Toast.makeText(this@MainActivity, "Loading", Toast.LENGTH_SHORT).show()
+                        }
+                        is UiState.Success -> {
+                            binding.etNote.text = it.data.toString()
+                        }
+                    }
+                }
+            }
         }
     }
 }

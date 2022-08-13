@@ -1,6 +1,9 @@
 <resources>
-    <string name="app_name">kotlin2</string>
+    <string name="app_name">Заметки</string>
     <string name="save">Save</string>
-    <string name="add">Добавить</string>
     <string name="delete">delete</string>
+    <string name="add">добавить</string>
+    <string name="title">title</string>
+    <string name="description">description</string>
+    <string name="Save">Save</string>
 </resources>
