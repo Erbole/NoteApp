@@ -1,4 +1,4 @@
-package com.geektach.kotlin2.presentation.ui
+package com.geektach.kotlin2.presentation.ui.mainActivity
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

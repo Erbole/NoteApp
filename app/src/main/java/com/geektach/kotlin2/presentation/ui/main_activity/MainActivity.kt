@@ -1,4 +1,4 @@
-package com.geektach.kotlin2.presentation.ui
+package com.geektach.kotlin2.presentation.ui.mainActivity
 
 import android.os.Bundle
 import android.widget.Toast
@@ -9,12 +9,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.geektach.kotlin2.core.UiState
 import com.geektach.kotlin2.databinding.ActivityMainBinding
-import com.geektach.kotlin2.domain.model.Note
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
 
@@ -28,15 +28,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initClickers() {
-        var i = 0
-        binding.btnSave.setOnClickListener {
-            i++
-            viewModel.addNote(Note(i.toString(), i.toString()))
-        }
 
-        binding.btnDelete.setOnClickListener {
-            i--
-            viewModel.deleteNote(Note(i.toString(), i.toString()))
+//        binding.btnSave.setOnClickListener {
+//            i++
+//            viewModel.addNote(Note(i.toString(), i.toString()))
+//        }
+//
+//        binding.btnDelete.setOnClickListener {
+//            i--
+//            viewModel.deleteNote(Note(i.toString(), i.toString()))
+//        }
+        binding.fabAdd.setOnClickListener {
+
         }
     }
 
@@ -90,7 +93,6 @@ class MainActivity : AppCompatActivity() {
                             Toast.makeText(this@MainActivity, "Loading", Toast.LENGTH_SHORT).show()
                         }
                         is UiState.Success -> {
-                            binding.etNote.text = it.data.toString()
                         }
                     }
                 }
