@@ -3,6 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/KT.work/NoteApp/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
+        <entry key="..\:/KT.work/NoteApp/app/src/main/res/layout/activity_second.xml" value="0.25416666666666665" />
+        <entry key="..\:/KT.work/NoteApp/app/src/main/res/layout/fragment_add_note.xml" value="0.25416666666666665" />
+        <entry key="..\:/KT.work/NoteApp/app/src/main/res/layout/fragment_main.xml" value="0.1" />
+        <entry key="..\:/KT.work/NoteApp/app/src/main/res/layout/fragment_update.xml" value="0.25416666666666665" />
+        <entry key="..\:/KT.work/NoteApp/app/src/main/res/layout/item.xml" value="0.25416666666666665" />
         <entry key="..\:/homework4/NoteApp/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/homework4/NoteApp/app/src/main/res/layout/activity_second.xml" value="0.24864130434782608" />
         <entry key="..\:/homework4/NoteApp/app/src/main/res/layout/item.xml" value="0.23958333333333334" />

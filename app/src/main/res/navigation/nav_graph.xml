@@ -7,19 +7,20 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.geektech.homework71.presentation.fragments.main.MainFragment"
+        android:name="com.geektach.kotlin2.presentation.fragments.main.MainFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_main" />
 
     <fragment
         android:id="@+id/addNoteFragment"
-        android:name="com.geektech.homework71.presentation.fragments.add_note.AddNoteFragment"
-        android:label="fragment_add_note"
-        tools:layout="@layout/fragment_add_note" />
+        android:name="com.geektach.kotlin2.presentation.fragments.add_note.AddNoteFragment"
+        android:label="fragment_addNote"
+        tools:layout="@layout/fragment_add_note"
+        />
     <fragment
-        android:id="@+id/updateFragment"
-        android:name="com.geektech.homework71.presentation.fragments.update.UpdateFragment"
+        android:id="@+id/editingFragment"
+        android:name="com.geektach.kotlin2.presentation.fragments.main.MainFragment"
         android:label="fragment_update"
-        tools:layout="@layout/fragment_update" />
+        tools:layout="@layout/fragment_editing" />
 
 </navigation>

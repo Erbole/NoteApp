@@ -1,4 +1,4 @@
-package com.geektech.homework71.extensions
+package com.geektach.kotlin2.extencion
 
 import android.view.View
 

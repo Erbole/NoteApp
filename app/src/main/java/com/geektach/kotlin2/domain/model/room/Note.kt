@@ -1,4 +1,4 @@
-package com.geektach.kotlin2.domain.model
+package com.geektach.kotlin2.domain.model.room
 
 import java.io.Serializable
 

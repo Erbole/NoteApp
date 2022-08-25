@@ -1,4 +1,4 @@
-package com.geektech.homework71.domain.model.network
+package com.geektach.kotlin2.domain.model.network
 
 data class Info(
     val count: Int? = null,

@@ -1,4 +1,6 @@
 package com.geektach.kotlin2.data.network
 
-class MainResultDto {
-}
+data class MainResultDto<T>(
+    val info: InfoDto? = null,
+    val result: List<T>
+)

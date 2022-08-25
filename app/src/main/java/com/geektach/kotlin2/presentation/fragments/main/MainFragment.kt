@@ -1,60 +1,137 @@
 package com.geektach.kotlin2.presentation.fragments.main
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.setFragmentResultListener
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.geektach.kotlin2.R
+import com.geektach.kotlin2.core.BaseFragment
+import com.geektach.kotlin2.core.UiState
+import com.geektach.kotlin2.databinding.FragmentMainBinding
+import com.geektach.kotlin2.domain.model.room.Note
+import com.geektach.kotlin2.extencion.invisible
+import com.geektach.kotlin2.extencion.showToast
+import com.geektach.kotlin2.extencion.visible
+import com.geektach.kotlin2.presentation.ui.main_activity.MainViewModel
+import com.geektach.kotlin2.presentation.ui.main_activity.NoteAdapter
+import com.geektach.kotlin2.presentation.fragments.update.EditingFragment
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class MainFragment : BaseFragment(), NoteAdapter.ItemClickListener {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [MainFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class MainFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var binding: FragmentMainBinding
+    private lateinit var viewModel: MainViewModel
+    private lateinit var adapter: NoteAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentMainBinding.inflate(layoutInflater)
+        viewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setFragmentResultListener("2") { key, bundle ->
+            val result = bundle.getSerializable("key")
+            viewModel.addNote(result as Note)
+        }
+
+        setFragmentResultListener("2") { key, bundle ->
+            val result = bundle.getSerializable(EditingFragment.editingKey)
+            viewModel.editingNote(result as Note)
+        }
+        initClick()
+        viewModel.getAllNotes()
+
+        viewModel.addNotesState.subscribe {
+            when (it) {
+                is UiState.Error -> {
+                    requireActivity().showToast(it.error)
+                }
+                is UiState.Loading -> {
+                    binding.progress.visible()
+                }
+                is UiState.Success -> {
+                    requireActivity().showToast("Add Note")
+                    binding.progress.invisible()
+                    viewModel.getAllNotes()
+                }
+            }
+        }
+        viewModel.notesState.subscribe {
+            when (it) {
+                is UiState.Error -> {
+                    requireActivity().showToast(it.error)
+                }
+                is UiState.Loading -> {
+                    binding.progress.visible()
+                }
+                is UiState.Success -> {
+                    requireActivity().showToast("Get All Notes")
+                    binding.progress.invisible()
+                    adapter = NoteAdapter(it.data)
+                    binding.recycler.adapter = adapter
+                    adapter.setItemClickListener(this)
+                }
+            }
+        }
+        viewModel.deleteNoteState.subscribe {
+            when (it) {
+                is UiState.Error -> {
+                    requireActivity().showToast(it.error)
+                }
+                is UiState.Loading -> {
+                    binding.progress.visible()
+                }
+                is UiState.Success -> {
+                    requireActivity().showToast("Delete Note")
+                    binding.progress.invisible()
+                    viewModel.getAllNotes()
+                }
+            }
+
+        }
+        viewModel.editingNoteState.subscribe {
+            when (it) {
+                is UiState.Error -> {
+                    requireActivity().showToast(it.error)
+                }
+                is UiState.Loading -> {
+                    binding.progress.visible()
+                }
+                is UiState.Success -> {
+                    requireActivity().showToast("Update Note")
+                    binding.progress.invisible()
+                    viewModel.getAllNotes()
+                }
+            }
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main, container, false)
+    private fun initClick() {
+        binding.fabAdd.setOnClickListener {
+            findNavController().navigate(R.id.addNoteFragment)
+        }
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MainFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MainFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onItemClick(note: Note) {
+        val bundle = Bundle()
+        bundle.putSerializable(keyNote, note)
+        findNavController().navigate(R.id.editingFragment, bundle)
     }
+
+    override fun onLongClickListener(note: Note) {
+        viewModel.deleteNote(note)
+    }
+    companion object {
+        const val keyNote = "keyNote"
+    }
+
 }
